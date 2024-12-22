@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import { useRef, useState } from 'react';
 import './App.css';
 
 function App() {
+  
+  const [todos, settodos] = useState([])
+  const inputref = useRef()
+
+  const handleClick = () => {
+    const text = inputref.current.value
+    settodos([...todos, {completed: false, text}])
+    inputref.current.value = "";
+  }
+
+  const handlecompleteditem = (index) =>{
+    let newtodos = [...todos]
+    newtodos[index].completed = !newtodos[index].completed
+    settodos(newtodos)
+    console.log(todos)
+  }
+
+  const handledeleteditem = (index) =>{
+    let newtodos = [...todos]
+    newtodos.splice(index, 1)
+    settodos(newtodos)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className='container'>
+        <h2>To Do List</h2>
+        <ul>
+          {todos.map(({completed, text}, index) => {
+            return (
+            <div className='items'>
+                <li key={index} className={completed? "done" : ""} onClick={() => handlecompleteditem(index)}>{text}</li>
+                <span onClick={() => handledeleteditem(index)} className='trash'>❌</span>
+            </div>
+          );
+          })}
+        </ul>
+        <input ref={inputref} placeholder='type...' />
+        <button onClick={handleClick}>Add</button>
+      </div>
     </div>
   );
 }
